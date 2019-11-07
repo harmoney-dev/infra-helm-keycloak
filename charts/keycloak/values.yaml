@@ -14,18 +14,26 @@ init:
 clusterDomain: cluster.local
 
 keycloak:
-  replicas: 4
+  replicas: 5
+
+#  image:
+#    repository: jboss/keycloak
+#    tag: 7.0.0
+#    pullPolicy: Always
 
   image:
-    repository: jboss/keycloak
-    tag: 7.0.0
+    repository: pandora.harmoneylabs.com:8083/harmoney/keycloak
+    tag: 0.0.3
     pullPolicy: Always
+
+#  imagePullSecrets:
+#  - name: regcred
 
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     ##
-    pullSecrets: []
+    pullSecrets: [regcred]
     # - myRegistrKeySecretName
 
   hostAliases: []
@@ -49,7 +57,7 @@ keycloak:
 
   containerSecurityContext:
     runAsUser: 1000
-    runAsNonRoot: true
+    runAsNonRoot: false
 
   ## The path keycloak will be served from. To serve keycloak from the root path, use two quotes (e.g. "").
   basepath: auth
@@ -98,6 +106,30 @@ keycloak:
     #   value: true
     # - name: DB_USE_CAST_FAIL
     #   value: false
+    #    RAILS_DB_ADDR: postgres-rails
+    #    RAILS_DB_DATABASE: rails
+    #    RAILS_DB_USER: admin
+    #    RAILS_DB_SCHEMA: public
+    #    RAILS_DB_PASSWORD: admin
+    - name: RAILS_DB_ADDR
+      value: ec2-34-231-34-50.compute-1.amazonaws.com
+    - name: RAILS_DB_SCHEMA
+      value: public
+    - name: RAILS_DB_DATABASE
+      valueFrom:
+        secretKeyRef:
+          name: rails-database-database
+          key: database
+    - name: RAILS_DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: rails-database-user
+          key: user
+    - name: RAILS_DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: rails-db-password
+          key: password
 
   affinity: |
     podAntiAffinity:
@@ -146,11 +178,11 @@ keycloak:
 
   resources:
        limits:
-         cpu: 0.9
-         memory: "512Mi"
+         cpu: 1.2
+         memory: "1024Mi"
        requests:
-         cpu: 0.9
-       memory: "512Mi"
+         cpu: 1.2
+       memory: "1024Mi"
 
   #     limits:
   #       cpu: "100m"
