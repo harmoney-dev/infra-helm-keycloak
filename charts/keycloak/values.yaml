@@ -113,6 +113,8 @@ keycloak:
     #    RAILS_DB_PASSWORD: admin
     - name: RAILS_DB_ADDR
       value: ec2-34-231-34-50.compute-1.amazonaws.com
+    - name: RAILS_DB_PORT
+      value: "5432"
     - name: RAILS_DB_SCHEMA
       value: public
     - name: RAILS_DB_DATABASE
