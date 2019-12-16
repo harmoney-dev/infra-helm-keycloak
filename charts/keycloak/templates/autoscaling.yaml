@@ -1,22 +1,48 @@
-apiVersion: autoscaling/v2beta1
+#apiVersion: autoscaling/v2beta2
+#kind: HorizontalPodAutoscaler
+#metadata:
+#  annotations:
+#  name: keycloak
+#  namespace: keycloak
+#spec:
+#  maxReplicas: 30
+#  metrics:
+#  - resource:
+#      name: memory
+#      targetAverageUtilization: 50
+#    type: Resource
+#  - resource:
+#      name: cpu
+#      targetAverageUtilization: 40
+#    type: Resource
+#  minReplicas: 1
+#  scaleTargetRef:
+#    apiVersion: apps/v1
+#    kind: StatefulSet
+#    name: keycloak
+
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  annotations:
   name: keycloak
   namespace: keycloak
 spec:
-  maxReplicas: 20
-  metrics:
-  - resource:
-      name: memory
-      targetAverageUtilization: 70
-    type: Resource
-  - resource:
-      name: cpu
-      targetAverageUtilization: 70
-    type: Resource
-  minReplicas: 15
   scaleTargetRef:
-    apiVersion: apps/v1
+    apiVersion: apps/v1 
+    name: keycloak 
     kind: StatefulSet
-    name: keycloak
+  minReplicas: 1 
+  maxReplicas: 40 
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization 
+        averageUtilization: 50
+#  - type: Resource
+#   resource:
+#      name: memory
+#      target:
+#        type: Utilization
+#        averageUtilization: 50
